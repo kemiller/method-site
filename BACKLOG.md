@@ -41,11 +41,11 @@ without a scramble. Get it into test mode and move on.
 - Checkout, portal, webhooks, idempotent handlers
 - Blocks: user tiers (#88)
 
-### 📈 Write 3-5 blog posts manually
-Set the voice and tone for automated content later. Topics:
-- "Why I built a recipe app for my ADHD brain"
-- "Cooking with executive dysfunction: what helps"
-- "What Method does differently"
+### 📈 Write 3-5 blog posts manually (1/3 published)
+Set the voice and tone for automated content later.
+- ✅ "Why I built a recipe app for my ADHD brain" — live at /blog/why-i-built-method
+- ⏳ "Cooking with executive dysfunction: what helps" — outline ready in content/drafts/
+- ⏳ "What Method does differently" — outline ready in content/drafts/
 These also become your SEO foundation and your podcast pitch material.
 
 ---
