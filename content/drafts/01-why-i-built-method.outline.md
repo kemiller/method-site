@@ -5,30 +5,95 @@
 
 ## Outline
 
-### The problem (personal)
-- You love cooking but kept abandoning recipes halfway through
-- Specific failure modes: losing your place, forgetting what you already added, getting overwhelmed by the wall of text, wandering off mid-recipe
-- The shame cycle: excited to try a recipe → frustrated → ordering takeout → feeling bad about it
+### The problem 
+
+I love to cook. But I can't count the times I've ruined a recipe by missing a
+step at a crucial moment, especially while baking. Like the time I forgot to
+add the butter at the beginning when creaming the sugar for peanut butter bars.
+The result was dense and oily from the unincorporated butter. Or the time I
+left the yeast out of a recipe for swedish rye bread (our favorite) in the
+bread machine. I find reading recipes incredibly frustrating. Ingredients are
+vaguely referenced in the instructions, but you have to go and find them in the
+list, adding a little cognitive load and an opportunity to lose track of one of
+them. A good app will let you tick off ingredients as you use them, which is
+good, but there's no way of verifying that you're looking at the right place at
+the right time. Steps are crammed together in a wall of text, so it's easy to
+overlook something important, especially if (as is often the case) it was
+written by someone with a lot of implicit knowledge about how to do it. 
+
+The other thing that's always bugged me is that these tools give you lots of
+options for organizing, but that's no help if your problem is that you're
+disorganized. It's 2026, I want a tool that will do the organizing for me.
 
 ### Why existing tools don't work
-- Recipe sites are designed for scrolling and SEO, not cooking
-- Ingredients at the top, steps at the bottom, ads in between
-- Nothing tracks where you are or what you've done
-- Recipe apps (Paprika, etc.) store recipes but don't change the experience of using them
+
+There are of course hundreds of sources of recipes out there, but let's look at
+them as tools for actually going into your kitchen and cooking.
+
+- Free and indie recipe sites are designed for scrolling and SEO, not cooking.
+  The recipe itself is so hard to find that they have to give you a button to
+  jump right to it. Ingredients at the top, steps at the bottom, ads in between
+- Paid recipe sites sometimes have pretty good clean interfaces, but they don't
+  break the fundamental format: list of ingredients, text instructions. And
+  you're stuck inside their closed universe. No space for great-grandma's
+  stuffing recipe that she wrote on an index card, or that amazing coconut
+  pumpkin chiffon pie you found on the web.
+- Apps are no better. Some of them are very good at being a tool for storing
+  and organizing, but very few of them solve the fundamental information
+  problem that makes recipes hard to follow.
+- It's hard to tell at a glance where you are in the process and what to do
+  next, or what can be done in parallel.
+- Unit conversion and scaling are hard to trust, because it tends to miss a lot
+  of nuance. References to quantities that are in the instructions don't scale,
+  or even worse, they DO scale when they're not supposed to. If I double my
+  cookie recipe, I don't want the reference to a tablespoon as the size of the
+  cookie to change. That's not a problem that can be solved with a normal
+  algorithm.
 
 ### What you actually needed
 - Small, trackable steps instead of paragraphs
 - Ingredients shown in context, at the step where you need them
 - A way to check things off so you know where you left off
 - Screen stays on, timers just work, no context-switching
+- Smart scaling that understands conventions and Just Works
+- Contextual help when you want it that disappears if you don't need it
 
-### What Method is
-- Brief description — not a feature list, just the core idea
-- "It restructures any recipe into a guided workflow that works with your brain instead of against it"
+### What is Method
 
-### Who it's for
-- Not just diagnosed ADHD — anyone who struggles with executive function while cooking
-- Parents, people with brain fog, anyone who finds traditional recipes overwhelming
+So I realize this is a little nerdy, but this is how I think. There's a lot of
+latent structure hiding in the blobs of text that we traditionally use to write
+a recipe down. There's also a lot of compression: the majority of recipes were
+written by and for people who already know how to cook, and so can read between
+the lines. Meaning, there's a special language you have to learn to speak
+before you can get the most out of a recipe. And there's a good reason for this: 
+a step-by-step description would be hard to write in a book. It's a lot more work for 
+a recipe author to break it down so rigorously. 
 
-### CTA
-- Try it free, link to sign up
+But we live in the age of AI. Why not let it work for us?
+
+### Software & AI that works for you 
+
+If you google "ADHD software" you will usually see a lot of apps designed to
+help you squeeze yourself into the expectations of a world that wasn't built
+with you in mind. Timers, trackers, coaches. That's not what we are creating
+here. We believe that software for ADHD should automate the boring and mundate
+so that you can focus on the fun parts, because ADHD people *thrive* on fun and
+the right kind of challenge. 
+
+And at the same time, we have no interest in replacing human recipe authors. AI
+is OK at an ad-hoc last minute suggestion here or there, but for real cooking
+-- just like for real art, and real music -- you need someone who knows how
+things taste. We have no interest in replacing the amazing and inspiring people
+who share that with the world. Instead, we want to add structure and context to
+the work they're already doing, without requiring them to change how they work
+in the slightest.
+
+### Who Method is for
+
+I built this for myself, and I think anyone with ADHD or executive dysfunction
+will recognize some of the challenges I've mentioned. But almost anyone who
+could use a little less distraction in their life, or one less excuse to skip
+cooking, can benefit as well. Accessible design is just good design.
+
+Try it for your self.  Get started for free [link]
+
