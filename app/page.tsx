@@ -224,7 +224,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="mx-auto max-w-5xl px-6 py-12 text-center text-sm text-slate-400">
-        Method — recipes that work with your brain.
+        Method - recipes that work with your brain. © 2026 Mount Pelion LLC
       </footer>
     </main>
   );
