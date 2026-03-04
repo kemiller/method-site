@@ -1,4 +1,5 @@
 const APP_URL = 'https://app.method.cooking';
+const ACCOUNTS_URL = 'https://accounts.method.cooking';
 
 export default function Home() {
   return (
@@ -32,7 +33,7 @@ export default function Home() {
         </p>
         <div className="mt-10 flex justify-center gap-3">
           <a
-            href={`${APP_URL}/waitlist`}
+            href={`${ACCOUNTS_URL}/waitlist`}
             className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700"
           >
             Try It Free
