@@ -32,7 +32,7 @@ export default function Home() {
         </p>
         <div className="mt-10 flex justify-center gap-3">
           <a
-            href={`${APP_URL}/waitlist`}
+            href={`${APP_URL}/sign-up`}
             className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700"
           >
             Try It Free
