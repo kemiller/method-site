@@ -1,112 +1,230 @@
 # Method — Business & Product Backlog
 
-Last updated: 2026-03-01
+Last updated: 2026-03-16
 
-This is the single prioritized backlog for Method. Everything — product, business,
-marketing, ops — lives here. Pick from the top. Ignore the bottom until you get there.
+**North star: AppSumo launch June 1. Submit by April 27.**
+
+Everything is now organized around the AppSumo timeline. Pick from the top of the current phase.
 
 ---
 
 ## How to Use This
 
-- **NOW**: The current sprint. Max 3 items in progress at once.
-- **NEXT**: Queued and ready. Pull when a NOW slot opens.
-- **LATER**: Scoped but not urgent. Don't think about these yet.
-- **SOMEDAY**: Ideas and possibilities. Review quarterly.
+- **NOW**: The current phase. Work top-to-bottom within each phase.
+- **AFTER LAUNCH**: Post-AppSumo priorities. Don't touch yet.
+- **SOMEDAY**: Ideas and possibilities. Review post-launch.
 
 Items marked with 🔧 are product/engineering. Items marked with 📈 are business/ops.
 
 ---
 
-## NOW — Get to First Real Users
+## Phase 1: Foundation — Mar 16–Mar 30
 
-The goal of this phase is: **10-20 real users (not you) are using Method weekly.**
-Nothing else matters until this is true.
+Goal: know what we're building and whether it works.
 
-### ~~🔧 Email verification and password reset (#90)~~ ✅ DONE
-Handled by Clerk. Closed.
+### 🔧 Define tier logic
+- Specify exact monthly credit limits for Free, Plus, Premium
+- Specify which features are gated per tier
+- Document assumptions to validate post-launch
 
-### ~~🔧 Google OAuth (#91)~~ ✅ DONE
-Handled by Clerk (dashboard toggle). Closed.
+### 🔧 Set up analytics (PostHog)
+Instrument key events: recipe generation, credit usage, tier upgrade, redemption code entry.
+Create launch dashboard: redemptions/hour, credit usage by tier, error rate.
 
-### ~~🔧 Sign in with Apple (#92)~~ ✅ DONE
-Handled by Clerk (dashboard toggle). Closed.
+### 🔧 Set up error monitoring (Sentry)
+Confirm alerts are wired to email/Slack.
 
-### ~~📈 Split marketing site from app~~ ✅ DONE
-`kemiller/method-site` deployed to `method.cooking`. App at `app.method.cooking`.
+### 🔧 App audit
+Full walkthrough as a new user. Create punch list of anything broken, embarrassing, or incomplete.
+Prioritize ruthlessly — only fix what would cause a refund request.
 
-### 🔧 Payments foundation — Stripe (#87)
-Even if you launch free-only, wiring Stripe now means you can flip the switch later
-without a scramble. Get it into test mode and move on.
-- Checkout, portal, webhooks, idempotent handlers
-- Blocks: user tiers (#88)
-
-### 📈 Write 3-5 blog posts manually (1/3 published)
-Set the voice and tone for automated content later.
-- ✅ "Why I built a recipe app for my ADHD brain" — live at /blog/why-i-built-method
-- ⏳ "Cooking with executive dysfunction: what helps" — outline ready in content/drafts/
-- ⏳ "What Method does differently" — outline ready in content/drafts/
-These also become your SEO foundation and your podcast pitch material.
+### 🔧 Write load test scripts
+Tool: loader.io (no-code) or k6. Cover: recipe generation, auth, credit check/decrement.
+Don't run yet — just get scripts ready.
 
 ---
 
-## NEXT — Harden for Strangers
+## Phase 2: Product Polish — Mar 30–Apr 13
 
-The goal of this phase is: **strangers can sign up, use the app, and not break things.**
+Goal: first-run experience is solid; freemium works end-to-end.
 
-### 🔧 Rate limiting and abuse controls (#98)
-Non-negotiable before public access. Protects your wallet.
+### 🔧 Implement freemium gating
+- Enforce monthly credit limits per tier
+- Credit reset logic (monthly, based on account creation date or calendar month)
+- Graceful degradation UX when credits exhausted (upsell prompt, not hard error)
 
-### 🔧 Observability baseline (#99)
-You need to know when things break before users tell you.
+### 🔧 Work through punch list
+Prioritize anything affecting first-run experience.
 
-### 🔧 User tiers, credits, and entitlements (#88)
-Free vs. paid enforcement. Depends on Stripe (#87).
-
-### 🔧 In-app support and feedback (#97)
-Simple email-based feedback. Doesn't need to be fancy — a mailto link with
-pre-filled subject is fine for v1.
-
-### 📈 Set up analytics (PostHog free tier)
-Instrument: method mode session duration, AI actions per user, recipe imports
-per user, retention by week. You need this data before you can make any
-business decisions.
-
-### 📈 Set up support bot (Crisp free tier)
-AI-powered chat widget. Train on your help docs. Handles 70-80% of queries.
+### 🔧 Set up Playwright smoke test suite
+Tool: Playwright codegen or Reflect.run (no-code, scheduled runs).
+Cover: free user happy path, Plus user happy path, credit exhaustion state, redemption code entry.
+Wire to run on every deploy.
 
 ---
 
-## LATER — Growth & Monetization
+## Phase 3: AppSumo Infrastructure — Apr 13–Apr 20
 
-The goal of this phase is: **sustainable growth with revenue covering costs.**
+Goal: codes work, stacking works, redemption flow is airtight.
 
-### 📈 Automated blog content pipeline
-Script: keyword list → Claude drafts post → publishes as draft → you batch-approve weekly.
-Depends on: your 3-5 manual posts existing as tone samples.
+### 🔧 Build redemption code batch generator
+- Generate 1000 unique one-time-use codes (UUIDs or similar)
+- Store in DB with status: unused / redeemed / revoked
+- Export CSV for AppSumo submission
 
-### 📈 Hire part-time social media VA ($400-800/mo)
-Repurposes blog content to Instagram/TikTok. Sends you a weekly 3-bullet summary.
-You never open the apps. Non-negotiable that this is a human, not automation.
+### 🔧 Build redemption flow
+- Landing page AppSumo redirects buyers to post-purchase
+- Code entry UI
+- Validation endpoint: check code exists, unused → mark consumed → create/upgrade Clerk user → assign tier
+- Handle edge cases: already-redeemed, invalid, expired
+
+### 🔧 Implement code stacking
+- If existing Plus account enters a second valid code → upgrade to Premium
+- Idempotent: redeeming same tier code twice should not double-upgrade or error badly
+
+### 🔧 Redemption edge case tests
+- Already-redeemed code
+- Invalid code
+- Stacking second code onto existing account
+- Stacking onto free account (should work)
+
+---
+
+## Phase 4: Listing Assets — Apr 20–Apr 27
+
+Goal: everything AppSumo needs to approve the listing.
+
+### 📈 Automated screenshot pipeline
+Tool: Playwright codegen + Shots.so for device frames.
+Capture: empty state, recipe generated, credit counter, tier comparison.
+Output to /assets/screenshots/ — regenerate with one command after UI changes.
+
+### 📈 Demo video
+Tool: Arcade (interactive demo, no editing) — strongly preferred.
+Cover: onboarding → generate a recipe → show credit usage → upsell moment.
+
+### 📈 Write AppSumo listing copy
+- Headline (lead with the "aha" moment, not the feature list)
+- Short description
+- Feature bullets (3–5, benefit-framed)
+- FAQ section (redemption instructions, what "lifetime" means, credit limits)
+- Tier breakdown table (what each code count unlocks)
+
+### 📈 Hero / feature images
+Use Figma with a reusable template, or Shots.so wrapping Playwright screenshots.
+
+---
+
+## 🚩 Milestone: Submit AppSumo Application — April 27
+
+Apply at: https://sell.appsumo.com
+
+Submission checklist:
+- [ ] Working product (not beta/coming soon)
+- [ ] Redemption URL
+- [ ] Batch of 500–1000 unique codes
+- [ ] Pricing / tier structure confirmed
+- [ ] Listing copy draft
+- [ ] Hero image
+
+---
+
+## Phase 5: Buffer + Approval Wait — Apr 27–May 18
+
+### 🔧 Run load tests
+Tool: loader.io free tier. Target: 200–500 concurrent users, 10 minutes sustained.
+Focus on AI inference pipeline — most likely bottleneck. Fix failures before launch.
+
+### 🔧 Set up uptime monitoring
+Tool: BetterUptime or UptimeRobot (free tier).
+Monitor: main app URL, API health endpoint, redemption landing page.
+Alert to email + Slack.
+
+### 📈 Respond to AppSumo feedback
+They may request copy changes, pricing adjustments, or product fixes.
+Turnaround quickly — delays push the launch date.
+
+### 📈 Write launch-day engagement plan
+- Be active on the deal page answering questions in real time
+- Prepare canned responses: redemption issues, what credits mean, refund policy
+- Plan how to seed first taco reviews (personal network, beta users)
+
+---
+
+## Phase 6: Launch Prep — May 18–Jun 1
+
+### 🔧 Set up support triage
+Script to watch support inbox. Auto-tag by type: redemption issue / refund request / feature question / bug report. Lets you batch-handle by category during high-volume launch window.
+
+### 🔧 Final QA pass
+Full walkthrough as a new AppSumo buyer: purchase → redemption → first use.
+Confirm credit limits enforced correctly. Confirm stacking works end-to-end.
+
+### 📈 Coordinate go-live with AppSumo
+Confirm June 1 launch date with AppSumo account manager.
+Confirm marketing assets are approved.
+
+### 📈 Launch-day PostHog dashboard
+Redemptions per hour, credit usage by tier, error rate. Have visible during launch.
+
+---
+
+## Key Risks
+
+1. **Slipping April 27 is the only thing that kills June 1.** Phase 4 (assets) takes longer than expected — start copy and video earlier than feels necessary.
+2. **AI inference latency under load** — test this specifically, not just web server throughput.
+3. **Credit limit abuse during 60-day refund window** — set limits conservatively. Worst-case usage must stay within your AI cost floor.
+4. **Pricing leak** — don't publish pricing anywhere online that undercuts AppSumo tier before launch.
+
+---
+
+## Tiers & Pricing
+
+| Tier | How acquired | Monthly credits | Notes |
+|------|-------------|-----------------|-------|
+| Free | Sign up | TBD | Ad-supported |
+| Plus | AppSumo 1 code (~$59) | TBD | Lifetime |
+| Premium | AppSumo 2 stacked codes (~$118) | TBD / unlimited | Lifetime + perks |
+
+Revenue split: 95% new AppSumo customers, 70% existing Sumo-lings.
+Payout delay: ~90 days (60-day refund window + end-of-month processing).
+
+---
+
+## Tool Decisions
+
+| Need | Tool | Notes |
+|------|------|-------|
+| Load testing | loader.io | Free, no-code |
+| Smoke tests | Reflect.run or Playwright codegen | Reflect = no-code |
+| Screenshots | Playwright codegen + Shots.so | Automated, regeneratable |
+| Demo video | Arcade | Interactive, no editing |
+| Uptime monitoring | BetterUptime free tier | Zero effort |
+| Analytics | PostHog | Already in plan |
+| Error monitoring | Sentry | Already in plan |
+
+---
+
+## After Launch — Growth & Monetization
+
+Don't touch these until post-AppSumo feedback is in.
+
+### 📈 Blog content pipeline
+Script: keyword list → Claude drafts post → publishes as draft → batch-approve weekly.
+Depends on: manual posts existing as tone samples.
 
 ### 📈 Podcast guest appearances
 Pitch 10-15 ADHD podcasts. "I have ADHD, I built a cooking app for us."
-VA clips interviews for social. One-time effort per appearance.
 
 ### 📈 Ad monetization — method mode surface
 Evaluate Chicory (recipe-specific ingredient ads) for the recipe view.
-Requires: analytics data on method mode dwell time and session frequency.
-This is your highest-value ad surface — don't waste it on generic display.
-
-### 📈 Rewarded video ads during AI wait
-Google AdMob or similar. Show during AI processing.
-Requires: user tiers (#88) so you only show to free tier.
+Requires analytics data on method mode dwell time.
 
 ### 🔧 Cost attribution dashboard (#94)
 Per-user, per-action cost tracking. Needed to calculate real LTV.
 
 ### 🔧 User deletion and data cleanup (#96)
-Legal requirement (GDPR/CCPA). Do before you have many users.
+Legal requirement (GDPR/CCPA).
 
 ### 🔧 URL processing cache (#95)
 Performance/cost optimization. Same recipe URL = don't re-parse.
@@ -114,63 +232,38 @@ Performance/cost optimization. Same recipe URL = don't re-parse.
 ### 🔧 Export and backup (#93)
 User self-serve data export. Trust signal and retention tool.
 
-### 📈 Pricing validation
-Launch at $10/mo, $100/yr. Instrument conversion funnel.
-Don't theorize — measure.
-
 ### 📈 SLM training for cost reduction
-Your most important long-term profitability lever.
-Free tier economics don't work without this.
+Most important long-term profitability lever. Free tier economics don't work without this.
+
+### 🔧 Method Mode entry point rework
+Default recipe view shows standard layout. Floating "Cook in Method Mode" button launches guided view.
+
+### 🔧 Auto-collapse sidebar on medium-width screens
+Collapse by default on ~768–1024px. Percentage-based breakpoints.
 
 ---
 
 ## SOMEDAY — Phase 2 & Beyond
 
-Don't think about these until you have 1,000+ active users.
+Don't think about these until 1,000+ active users.
 
 ### 📈 Recipe creator partnerships
 Embeddable accessible recipe widget for food bloggers.
 Pitch: "Your recipe, accessible to the 15-20% of your audience with ADHD."
-Start with 5-10 mid-tier bloggers who have ADHD themselves.
 
 ### 🔧 Method Chef modifies recipes (#112)
-AI can suggest and save recipe modifications.
+AI suggests and saves recipe modifications. Marked experimental in UI.
+- Show diff/summary before saving
+- Always save as a copy (never overwrite original)
 
 ### 🔧 Dietary compatibility warnings (#82)
 Re-implement with reliable matching.
-
-### 🔧 Prompt injection hardening (#63)
-Harden URL import against adversarial input.
-
-### 🔧 Invite codes and controlled onboarding (#89)
-Waitlist/invite system. Maybe useful for launch, maybe not.
 
 ### 📈 Native mobile app
 Only if web usage patterns justify it.
 
 ### 📈 Affiliate/commerce integration
 Ingredient purchase links (Instacart, Amazon Fresh) in method mode.
-Depends on: proven dwell time data, meaningful user base.
-
----
-
-## Weekly Review Checklist
-
-Every [pick a day], spend 30 minutes:
-
-- [ ] What did I ship this week?
-- [ ] Are my 3 NOW items still the right 3?
-- [ ] Any escalated support tickets?
-- [ ] Pull one item from NEXT if a NOW slot opened
-
-## Monthly Review Checklist
-
-First [pick a day] of the month, spend 1 hour:
-
-- [ ] Review costs (AI spend, hosting, any tools)
-- [ ] Review one metric (pick: conversion, retention, or usage)
-- [ ] Is anything in LATER now urgent? Move it up
-- [ ] Is anything in NOW stuck? Unstick or kill it
 
 ---
 
@@ -179,13 +272,28 @@ First [pick a day] of the month, spend 1 hour:
 | Item | Monthly Cost | Notes |
 |------|-------------|-------|
 | Vercel | $0-20 | Free tier likely sufficient early |
-| Supabase/Postgres | $0-25 | Depends on provider |
+| Postgres (Neon) | $0-25 | Depends on usage |
 | AI (Claude API) | Variable | ~$0.05-0.15 per action × users × actions |
 | Clerk (auth) | $0-25 | Free tier: 10k MAU |
 | Analytics (PostHog) | $0 | Free tier: 1M events/mo |
-| Support (Crisp) | $0 | Free tier sufficient initially |
+| Sentry | $0 | Free tier sufficient initially |
 | Domain/DNS | ~$1 | Annual, amortized |
 | **Total pre-revenue** | **~$20-65/mo + AI** | |
 
-AI cost is the wildcard. At 20 users doing 10 actions/month each: $10-30/mo.
+AI cost is the wildcard. At 20 users doing 10 actions/month: $10-30/mo.
 At 200 users: $100-300/mo. SLM is the fix.
+
+---
+
+## Weekly Review Checklist
+
+- [ ] What did I ship this week?
+- [ ] Am I on track for the current phase deadline?
+- [ ] Any escalated support tickets?
+- [ ] Pull next item within phase
+
+## Monthly Review Checklist
+
+- [ ] Review costs (AI spend, hosting, any tools)
+- [ ] Phase deadline at risk?
+- [ ] Anything blocking AppSumo submission?
