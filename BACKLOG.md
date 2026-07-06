@@ -1,6 +1,6 @@
 # Method — Product Backlog
 
-Last updated: 2026-04-04
+Last updated: 2026-07-06
 
 **North star: Ken and his wife use Method full-time and feel nothing is missing.**
 
@@ -87,29 +87,39 @@ Method Chef is a differentiator. It needs to be genuinely good — not just func
 
 Recipe apps live on mobile. This is table stakes for real household use.
 
+**Decisions (2026-07-06):** Fully native **Swift/SwiftUI** (not React Native) — idiomatic
+iOS/iPadOS, new repo `method-ios`, min iOS 26, TestFlight-only distribution for now.
+**Offline-first**: 100% offline-capable except server-side LLM analysis (import parsing,
+enhancement, chat). Full offline read-write with a queued-mutation sync engine — not
+read-only. Phased full port; plan lives with the method repo planning docs. On-device
+Apple Foundation Models for simple tasks (dietary checks, tag suggestions, gated
+single-page scan) in a later phase.
+
 ### NOW
 
-#### 🔧 Define iOS scope (v1)
-- Core features only: browse library, view recipe in method mode, cook through steps
-- No import from mobile v1 (too complex for MVP)
-- Auth via Clerk (sign in with existing account)
-- Read-only sync from server — no offline write
+#### 🔧 iOS Phase 0 — server seams + spikes (method repo)
+- Structured import failure codes + `GET /api/jobs/{id}` status endpoint + events auth
+- Client-supplied-content import (WKWebView browser-fallback seam)
+- Golden fixtures exporter (`scripts/export-ios-fixtures.ts`) for Swift contract tests
+- Clerk Bearer-token spike + iOS native-app registration in Clerk Dashboard
 
-#### 🔧 Tech stack decision
-- React Native (Expo) vs Swift native
-- Evaluation criteria: speed to ship, performance in method mode, future sharing features
-- Make a call and document it
-
-#### 🔧 Build iOS v1
-- Library list → recipe detail → method mode step-by-step
-- Timer support (already exists on web, needs native bridge)
-- Minimal but polished — this is the first impression on mobile
+#### 🔧 iOS Phase 1 — browse / detail / cook / sync
+- Library list → recipe detail (Shop/Cook) → method mode step-by-step
+- Timers with notifications (Live Activity as 1.5)
+- Offline-first sync engine (GRDB, delta sync, queued mutations, image cache)
+- Exit criteria: airplane-mode test — full offline cook-through, clean queue drain on reconnect
 
 ### NEXT
 
-#### 🔧 iOS import
+#### 🔧 iOS Phase 2 — import
 - Web URL import from share sheet
+- In-app browser import fallback (for bot-blocked/paywalled/JS-heavy sites)
 - Photo scanning from camera roll
+- Recipe editor + manual creation (fully offline via queued saves)
+
+#### 🔧 iOS Phase 3 — Chat with Chef + settings parity
+
+#### 🔧 iOS Phase 4 — on-device Foundation Models (dietary, tags, gated scan)
 
 ---
 
